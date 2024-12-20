@@ -1,0 +1,12 @@
+extends layouts/defauth.pug
+block main
+  h1 Thêm sản phẩm mới
+  form(action="/create" method="POST")
+    .mb-3
+      label(for="name") Tên sản phẩm
+      input#name.form-control(type="text" name="name" required)
+    .mb-3
+      label(for="price") Giá
+      input#price.form-control(type="number" name="price" required)
+    button.btn.btn-primary(type="submit") Thêm
+    a.btn.btn-secondary(href="/") Hủy

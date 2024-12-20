@@ -1,0 +1,14 @@
+extends layouts/defauth.pug
+block main
+  h1 Chỉnh sửa sản phẩm
+
+  form(action=`/edit/${product._id}`, method="POST")
+    div
+      label(for="name") Tên sản phẩm
+      input(type="text", name="name", id="name", value=product.name)
+    div
+      label(for="price") Giá sản phẩm
+      input(type="number", name="price", id="price", value=product.price)
+    div
+      button(type="submit") Lưu thay đổi
+

@@ -1,0 +1,24 @@
+extends layouts/defauth.pug
+
+
+
+block main
+  h1 Danh sách sản phẩm
+
+  if product.length > 0
+    table(border="1")
+      thead
+        tr
+          th Tên sản phẩm
+          th Giá sản phẩm
+          th Thao tác
+      tbody
+        each p in product
+          tr
+            td #{p.name}
+            td #{p.price}
+            td
+              a(href=`/edit/${p._id}`) Chỉnh sửa
+              a(href=`/delete/${p._id}`) Xóa
+  else
+    p Hiện tại chưa có sản phẩm nào.

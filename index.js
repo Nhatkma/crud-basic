@@ -6,7 +6,13 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const port = 3000;
+const methodOverride = require('method-override');
 
+
+app.use(methodOverride('_method'));
+
+app.set("views","./views");
+app.set("view engine","pug");
 
 const productsController = require("./controllers/indexController");
 const connect = require("./config/connect")
@@ -20,11 +26,9 @@ connect(app);
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get("/api",(req,res)=>{
-  res.status(200).json("hello")
-});
 
-app.use("/v1",productRoute);
+
+app.use("/",productRoute);
 
 
 app.listen(port,(req,res)=>{

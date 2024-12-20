@@ -3,74 +3,78 @@ const router = express.Router();
 const Product = require("../models/model");
 
 const productsController = {
+  homePage: async (req, res) => {
+    res.render('home'); // Render trang home.pug
+  },
   
-  getProduct: async(req,res)=>{
+  getProduct: async(req, res) => {
     try {
       const product = await Product.find();
-      res.status(200).json(product);
+      if (Array.isArray(product)) { 
+        res.render("show", { product });
+      } else {
+        res.render("show", { product: [] }); 
+      }
     } catch (error) {
       res.status(500).json(error);
     }
   },
-  getProductById: async(req,res)=>{
+
+  createProduct: async(req,res) => {
+    try {
+      const { name, price } = req.body; 
+      const newProduct = new Product({ name, price });
+      const saveProduct = await newProduct.save();
+      res.redirect("/"); 
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  editProduct: async (req, res) => {
     try {
       const product = await Product.findById(req.params.id);
       if (product) {
-        res.status(200).json(product);
-        
-      }else{
-        return res.status(404).json("Product not found" );
+        res.render('edit', { product: product });
+      } else {
+        res.status(404).json("Product not found");
       }
-      
-      
     } catch (error) {
       res.status(500).json(error);
     }
   },
-  createProduct: async(req,res)=>{
-    try {
-      const newProduct = new Product(req.body);
-      const saveProduct = await newProduct.save();
-      res.status(201).json(saveProduct);
-      
-    } catch (error) {
-      res.status(500).json(error);
-      
-    }
 
-  },
-  updateProduct:async(req,res)=>{
+  updateProduct: async(req,res) => {
     try {
-      const updateProduct = await Product.findByIdAndUpdate(req.params.id,
-        { $set: req.body },
-        { new: true }
+      const { name, price } = req.body;
+      const updatedProduct = await Product.findByIdAndUpdate(
+        req.params.id,      
+        { name, price },     
+        { new: true }       
       );
-      
-      if (updateProduct) {
-        res.status(200).json(updateProduct);
-        
+  
+      if (updatedProduct) {
+        res.redirect('/');
+      } else {
+        res.status(404).json("Product not found");
       }
-      return res.status(404).json( "Product not found");
-      
     } catch (error) {
       res.status(500).json(error);
     }
   },
-  deleteProduct : async(req,res)=>{
+
+  deleteProduct: async(req,res) => {
     try {
-     
       const deleteProduct = await Product.findByIdAndDelete(req.params.id);
       if (deleteProduct) {
-        res.status(200).json("Delete success");
-        
-      }else{
-        return res.status(404).json("Product not found" );
+        res.redirect('/');
+      } else {
+        return res.status(404).json("Product not found");
       }
-      
     } catch (error) {
       res.status(500).json(error);
     }
-  }
- 
-}
+  },
+
+};
+
 module.exports = productsController;
